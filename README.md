@@ -4,6 +4,6 @@
 poetry install
 
 # Run zed
-poetry run python zed.py
+poetry run python zed/zed.py
 
 
