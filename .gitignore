@@ -1,5 +1,8 @@
 *.pyc
 
+# Keys
+keys
+
 # Packages
 /dist/*
 
