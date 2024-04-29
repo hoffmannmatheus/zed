@@ -1,10 +1,24 @@
-from dataclasses import asdict, dataclass
-from typing import Dict, List, Literal
+from dataclasses import dataclass
+from enum import Enum
+from typing import List, Optional
+
+
+class CliCommandType(str, Enum):
+    COMMAND = "COMMAND"
+    CONFIRM = "CONFIRM"
+    ANSWER = "ANSWER"
 
 
 @dataclass
 class CliPromptInput:
     query: str
+
+
+@dataclass
+class CliPromptOutput:
+    answer: Optional[str] = None
+    command: Optional[str] = None
+    needs_confirmation: bool = True
 
 
 @dataclass
