@@ -1,6 +1,7 @@
 from typing import List, Optional
 
 from openai import AsyncOpenAI
+from zed.constants import DEFAULT_MODEL, OpenAiModel
 from zed.model.defs import OpenAIMessage, Settings
 from zed.utils.render_utils import render_template
 
@@ -9,11 +10,11 @@ from .defs import CliCommandType, CliPromptInput, CliPromptOutput
 
 class Runner:
 
-    def __init__(self, client: AsyncOpenAI):
+    def __init__(self, client: AsyncOpenAI, model: OpenAiModel):
         self.client = client
         self.template = "template"
         self.settings = Settings(
-            model="gpt-4-turbo",
+            model=model,
             max_tokens=64,
             temperature=0.0,
             stream=False,
