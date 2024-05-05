@@ -63,13 +63,15 @@ async def main():
 
     if cli_prompt_output.answer:
         console.print_answer(cli_prompt_output.answer)
-    if cli_prompt_output.command:
-        console.print_command(cli_prompt_output.command)
-    confirmed = console.await_confirmation()
+    if not cli_prompt_output.command:
+        return sys.exit(0)
 
+    console.print_command(cli_prompt_output.command)
+    confirmed = console.await_confirmation()
     if confirmed:
         log.info(f'RUNNING {cli_prompt_output.command}')
-        os.system(cli_prompt_output.command)
+        command_result = os.system(cli_prompt_output.command)
+        return sys.exit(command_result)
     else:
         console.print_farewell()
         return sys.exit(0)
