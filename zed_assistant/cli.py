@@ -23,7 +23,7 @@ zed_ascii = r"""
 
 def main():
     parser = ArgumentParser(
-        description="A friendly LLM command line assistant based on LLMs."
+        description="zed is a LLM-based CLI assistant built with python and Chat GPT"
     )
     parser.add_argument(
         "--debug",
@@ -42,7 +42,7 @@ def main():
         "--open-ai-key",
         type=str,
         required=False,
-        help=f"The Open AI API key.",
+        help=f"The Open AI API key. You can also set the environment variable {OAI_KEY_ENV_VARIABLE}.",
     )
     parsed, user_query = parser.parse_known_args()
 
@@ -60,7 +60,7 @@ def main():
         )
         sys.exit(-1)
     if not user_query:
-        log.debug("No question or comment provided to zed.")
+        log.debug(" No question or comment provided to zed.")
         print(zed_ascii)
         parser.print_help()
         sys.exit(0)
