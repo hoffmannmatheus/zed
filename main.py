@@ -48,6 +48,9 @@ def main():
         log.error(f" Open AI key is missing. Please set the '{OAI_KEY_ENV_VARIABLE}' "
                   "environment variable, or as a command parameter.")
         sys.exit(-1)
+    if not user_query:
+        log.error('No question or comment provided to zed.')
+        sys.exit(-1)
 
     success = asyncio.run(
         zed.run(
