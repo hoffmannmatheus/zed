@@ -1,4 +1,4 @@
-import logging
+from logging import Logger
 import os
 
 from openai import AsyncOpenAI
@@ -7,10 +7,8 @@ from .constants import OpenAiModel
 from .model.cli_prompt import Runner, CliPromptInput
 from .utils import Console
 
-log = logging.getLogger(__name__)
 
-
-async def run(oai_key: str, model: OpenAiModel, user_query: str) -> bool:
+async def run(log: Logger, oai_key: str, model: OpenAiModel, user_query: str) -> bool:
     """
     Main Zed executor.
     """
@@ -18,6 +16,7 @@ async def run(oai_key: str, model: OpenAiModel, user_query: str) -> bool:
     console.show_spinner()
 
     runner = Runner(
+        log=log,
         client=AsyncOpenAI(api_key=oai_key),
         model=model,
     )

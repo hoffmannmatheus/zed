@@ -54,6 +54,7 @@ def main():
 
     success = asyncio.run(
         zed.run(
+            log=log,
             oai_key=oai_key,
             model=model,
             user_query=" ".join(user_query),

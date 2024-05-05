@@ -1,4 +1,4 @@
-import logging
+from logging import Logger
 from typing import List, Optional
 
 from openai import AsyncOpenAI
@@ -8,12 +8,10 @@ from zed.utils.render_utils import render_template
 
 from .defs import CliCommandType, CliPromptInput, CliPromptOutput
 
-log = logging.getLogger(__name__)
-
 
 class Runner:
-
-    def __init__(self, client: AsyncOpenAI, model: OpenAiModel):
+    def __init__(self, log: Logger, client: AsyncOpenAI, model: OpenAiModel):
+        self.log = log
         self.client = client
         self.template = "template"
         self.settings = Settings(
@@ -26,19 +24,19 @@ class Runner:
     async def run_prompt(
         self, prompt_input: CliPromptInput
     ) -> Optional[CliPromptOutput]:
-        log.debug(f"Calling OpenAI with args {self.settings.to_dict()}")
+        self.log.debug(f"Calling OpenAI with args {self.settings.to_dict()}")
         result = await self.client.chat.completions.create(
             **self.settings.to_dict(),
             messages=self._build_messages(prompt_input=prompt_input),
         )
 
-        log.debug(f"Full OAI {result = }")
+        self.log.debug(f"Full OAI {result = }")
         if result.usage:
             # TODO log usage.prompt_tokens and usage.completition_tokens
             ...
         choices = result.choices
         if not choices or not choices[0].message or not choices[0].message.content:
-            log.warning(f"Warning: bad OpenAI result: {result}")
+            self.log.warning(f"Warning: bad OpenAI result: {result}")
             return None
 
         return self._parse_result(result=result.choices[0].message.content)
@@ -61,7 +59,7 @@ class Runner:
 
     def _parse_result(self, result: str) -> Optional[CliPromptOutput]:
         result_by_line = result.split("\n")
-        log.debug(f"_parse_result(): {result_by_line = }")
+        self.log.debug(f"_parse_result(): {result_by_line = }")
         answer: Optional[str] = None
         command: Optional[str] = None
         included_confirm = False
@@ -80,7 +78,7 @@ class Runner:
         if not answer and not command:
             return None
         if command and not included_confirm:
-            log.warning("Error! Answer included a COMMAND, but no CONFIRM instruction")
+            self.log.warning("Error! Answer included a COMMAND, but no CONFIRM instruction")
             return None
         return CliPromptOutput(
             answer=answer,
