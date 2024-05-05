@@ -1,10 +1,10 @@
-from logging import Logger
 import os
+from logging import Logger
 
 from openai import AsyncOpenAI
 
 from .constants import OpenAiModel
-from .model.cli_prompt import Runner, CliPromptInput
+from .model.cli_prompt import CliPromptInput, Runner
 from .utils import Console
 
 
@@ -26,7 +26,7 @@ async def run(log: Logger, oai_key: str, model: OpenAiModel, user_query: str) ->
         ),
     )
     console.hide_spinner()
-    log.debug(f'Runner result: {cli_prompt_output = }')
+    log.debug(f"Runner result: {cli_prompt_output = }")
 
     if not cli_prompt_output:
         console.print_retry()
@@ -40,7 +40,7 @@ async def run(log: Logger, oai_key: str, model: OpenAiModel, user_query: str) ->
     console.print_command(cli_prompt_output.command)
     confirmed = console.await_confirmation()
     if confirmed:
-        log.info(f'RUNNING {cli_prompt_output.command}')
+        log.info(f"RUNNING {cli_prompt_output.command}")
         command_result = os.system(cli_prompt_output.command)
         return command_result == 0
     else:

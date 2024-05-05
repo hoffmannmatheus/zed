@@ -8,4 +8,3 @@ DEFAULT_MODEL = "gpt-4-turbo"
 """
 The default OpenAI model used by Zed.
 """
-

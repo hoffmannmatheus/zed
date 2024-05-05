@@ -2,6 +2,7 @@ from logging import Logger
 from typing import List, Optional
 
 from openai import AsyncOpenAI
+
 from zed.constants import OpenAiModel
 from zed.model.defs import OpenAIMessage, Settings
 from zed.utils.render_utils import render_template
@@ -67,18 +68,20 @@ class Runner:
 
         for line in result_by_line:
             if line.startswith(CliCommandType.ANSWER):
-                answer = line[len(CliCommandType.ANSWER.value) :].strip()
+                answer = line[len(CliCommandType.ANSWER.value):].strip()
             elif line.startswith(CliCommandType.COMMAND):
-                command = line[len(CliCommandType.COMMAND.value) :].strip()
+                command = line[len(CliCommandType.COMMAND.value):].strip()
             elif line.startswith(CliCommandType.CONFIRM):
-                confirm = line[len(CliCommandType.COMMAND.value) :].strip()
+                confirm = line[len(CliCommandType.COMMAND.value):].strip()
                 included_confirm = True
                 needs_confirmation = confirm == "yes"
 
         if not answer and not command:
             return None
         if command and not included_confirm:
-            self.log.warning("Error! Answer included a COMMAND, but no CONFIRM instruction")
+            self.log.warning(
+                "Error! Answer included a COMMAND, but no CONFIRM instruction"
+            )
             return None
         return CliPromptOutput(
             answer=answer,

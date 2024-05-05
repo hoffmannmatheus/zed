@@ -8,10 +8,10 @@ TEXT_CONFIRMATION = "[y/n]: "
 class Console:
     # TODO improve colors
     def __init__(self):
-        self.spinner = Halo(text='Thinking...\n', spinner='arrow3')
-        self.column_width = max([
-            len(t) for t in [TEXT_ANSWER, TEXT_COMMAND, TEXT_CONFIRMATION]
-        ])
+        self.spinner = Halo(text="Thinking...\n", spinner="arrow3")
+        self.column_width = max(
+            [len(t) for t in [TEXT_ANSWER, TEXT_COMMAND, TEXT_CONFIRMATION]]
+        )
 
     def print_answer(self, answer: str):
         print(f"{TEXT_ANSWER:>{self.column_width}}{answer}")
@@ -26,7 +26,7 @@ class Console:
         print("Sounds good, anytime.")
 
     def await_confirmation(self) -> bool:
-        return input(f"{TEXT_CONFIRMATION:>{self.column_width}}").lower() == 'y'
+        return input(f"{TEXT_CONFIRMATION:>{self.column_width}}").lower() == "y"
 
     def show_spinner(self):
         self.spinner.start()

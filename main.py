@@ -6,7 +6,7 @@ from argparse import ArgumentParser
 from typing import get_args
 
 from zed import zed
-from zed.constants import  OAI_KEY_ENV_VARIABLE, DEFAULT_MODEL, OpenAiModel
+from zed.constants import DEFAULT_MODEL, OAI_KEY_ENV_VARIABLE, OpenAiModel
 
 logging.basicConfig(stream=sys.stdout)
 log = logging.getLogger(__name__)
@@ -42,14 +42,16 @@ def main():
     oai_key = parsed.open_ai_key or os.environ.get(OAI_KEY_ENV_VARIABLE)
 
     log.setLevel(logging.DEBUG if is_debug else logging.WARNING)
-    log.debug(f'arguments: {is_debug = }, {model =}, {user_query}')
+    log.debug(f"arguments: {is_debug = }, {model =}, {user_query}")
 
     if not oai_key:
-        log.error(f" Open AI key is missing. Please set the '{OAI_KEY_ENV_VARIABLE}' "
-                  "environment variable, or as a command parameter.")
+        log.error(
+            f" Open AI key is missing. Please set the '{OAI_KEY_ENV_VARIABLE}' "
+            "environment variable, or as a command parameter."
+        )
         sys.exit(-1)
     if not user_query:
-        log.error('No question or comment provided to zed.')
+        log.error("No question or comment provided to zed.")
         sys.exit(-1)
 
     success = asyncio.run(
