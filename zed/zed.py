@@ -3,9 +3,9 @@ from logging import Logger
 
 from openai import AsyncOpenAI
 
-from .constants import OpenAiModel
-from .model.cli_prompt import CliPromptInput, Runner
-from .utils import Console
+from zed.constants import OpenAiModel
+from zed.model.cli_prompt import CliPromptInput, Runner
+from zed.utils import Console
 
 
 async def run(log: Logger, oai_key: str, model: OpenAiModel, user_query: str) -> bool:

@@ -51,8 +51,9 @@ def main():
         )
         sys.exit(-1)
     if not user_query:
-        log.error("No question or comment provided to zed.")
-        sys.exit(-1)
+        log.debug("No question or comment provided to zed.")
+        parser.print_help()
+        sys.exit(0)
 
     success = asyncio.run(
         zed.run(
