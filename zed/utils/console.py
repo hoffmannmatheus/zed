@@ -1,6 +1,6 @@
 from typing import List
 
-from colorama import Fore, Back, Style
+from colorama import Back, Fore, Style
 from halo import Halo
 
 TEXT_ANSWER = "[answer]:"
@@ -36,24 +36,33 @@ class Console:
 
     def await_confirmation(self) -> bool:
         confirmation_title = styled(
-            text=f'{TEXT_CONFIRMATION:>{self.column_width}}',
+            text=f"{TEXT_CONFIRMATION:>{self.column_width}}",
             style=Style.BRIGHT,
             color=Fore.MAGENTA,
         )
         return input(f"{confirmation_title} ").lower() in CONFIRM_OPTIONS
 
     def print_run_command(self, command: str):
-        print(styled(text=f"\n$ {command}\n", style=Style.DIM, color=Fore.LIGHTWHITE_EX))
+        print(
+            styled(text=f"\n$ {command}\n", style=Style.DIM, color=Fore.LIGHTWHITE_EX)
+        )
 
     def print_retry(self):
-        print(styled(text="Sorry, but I couldn't find an answer. Please try again.", color=Fore.LIGHTRED_EX))
+        print(
+            styled(
+                text="Sorry, but I couldn't find an answer. Please try again.",
+                color=Fore.LIGHTRED_EX,
+            )
+        )
 
     def print_farewell(self):
-        print(styled(
-            text=f"{' ':>{self.column_width}} Sounds good, anytime.",
-            style=Style.DIM,
-            color=Fore.LIGHTWHITE_EX,
-        ))
+        print(
+            styled(
+                text=f"{' ':>{self.column_width}} Sounds good, anytime.",
+                style=Style.DIM,
+                color=Fore.LIGHTWHITE_EX,
+            )
+        )
 
     def show_spinner(self):
         self.spinner.start()
