@@ -1,12 +1,42 @@
 
-# Install dependencies
+# Overview 
+A helpful command line assistant, based on ChatGPT.
+
+# Installation
 ```bash
+pip install zed_py
+```
+
+# Usage
+```bash
+zed --help
+```
+
+## Examples
+```bash
+zed zip my-folder/
+```
+
+# Contributing 
+## Install dependencies
+Setup the project locally:
+```bash
+git clone https://github.com/hoffmannmatheus/zed/ && cd zed
 poetry install
 ```
 
-# Run zed
+## Run tests
 ```bash
-export OPENAI_API_KEY="your-openai-key"
-poetry run python zed/zed.py
+poetry run pytest
 ```
 
+## Run zed locally
+First, setup your local OpenAI API key: 
+```bash
+export ZED_OAI_KEY="your-openai-key"
+```
+
+Then, run locally with:
+```bash
+poetry run zed
+```
