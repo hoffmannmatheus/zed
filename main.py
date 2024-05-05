@@ -5,17 +5,14 @@ import sys
 from argparse import ArgumentParser
 from typing import get_args
 
-from openai import AsyncOpenAI
-
-from zed.constants import DEFAULT_MODEL, OpenAiModel
-from zed.model.cli_prompt.runner import CliPromptInput, Runner
-from zed.utils import Console
+from zed import zed
+from zed.constants import  OAI_KEY_ENV_VARIABLE, DEFAULT_MODEL, OpenAiModel
 
 logging.basicConfig(stream=sys.stdout)
 log = logging.getLogger(__name__)
 
 
-async def main():
+def main():
     parser = ArgumentParser(
         description="A friendly LLM command line assistant based on LLMs."
     )
@@ -32,50 +29,35 @@ async def main():
         default=DEFAULT_MODEL,
         help=f"The specific Open AI model to be used. Default is '{DEFAULT_MODEL}'.",
     )
-    parsed, query_params = parser.parse_known_args()
-
-    console = Console()
-    console.show_spinner()
+    parser.add_argument(
+        "--open-ai-key",
+        type=str,
+        required=False,
+        help=f"The Open AI API key.",
+    )
+    parsed, user_query = parser.parse_known_args()
 
     is_debug: bool = parsed.debug
     model: OpenAiModel = parsed.model
+    oai_key = parsed.open_ai_key or os.environ.get(OAI_KEY_ENV_VARIABLE)
 
     log.setLevel(logging.DEBUG if is_debug else logging.WARNING)
-    log.debug(f'arguments: {is_debug = }, {model =}, {query_params}')
+    log.debug(f'arguments: {is_debug = }, {model =}, {user_query}')
 
-    runner = Runner(
-        client=AsyncOpenAI(
-            api_key=os.environ.get("ZED_OAI_KEY"),
-        ),
-        model=model,
+    if not oai_key:
+        log.error(f" Open AI key is missing. Please set the '{OAI_KEY_ENV_VARIABLE}' "
+                  "environment variable, or as a command parameter.")
+        sys.exit(-1)
+
+    success = asyncio.run(
+        zed.run(
+            oai_key=oai_key,
+            model=model,
+            user_query=" ".join(user_query),
+        )
     )
-    cli_prompt_output = await runner.run_prompt(
-        CliPromptInput(
-            query=" ".join(query_params),
-        ),
-    )
-    console.hide_spinner()
-    log.debug(f'Runner result: {cli_prompt_output = }')
-
-    if not cli_prompt_output:
-        console.print_retry()
-        return sys.exit(-1)
-
-    if cli_prompt_output.answer:
-        console.print_answer(cli_prompt_output.answer)
-    if not cli_prompt_output.command:
-        return sys.exit(0)
-
-    console.print_command(cli_prompt_output.command)
-    confirmed = console.await_confirmation()
-    if confirmed:
-        log.info(f'RUNNING {cli_prompt_output.command}')
-        command_result = os.system(cli_prompt_output.command)
-        return sys.exit(command_result)
-    else:
-        console.print_farewell()
-        return sys.exit(0)
+    sys.exit(0 if success else -1)
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
