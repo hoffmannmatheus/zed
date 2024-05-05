@@ -41,6 +41,7 @@ async def run(log: Logger, oai_key: str, model: OpenAiModel, user_query: str) ->
     confirmed = console.await_confirmation()
     if confirmed:
         log.info(f"RUNNING {cli_prompt_output.command}")
+        console.print_run_command(cli_prompt_output.command)
         command_result = os.system(cli_prompt_output.command)
         return command_result == 0
     else:
