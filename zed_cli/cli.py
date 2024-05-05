@@ -5,11 +5,20 @@ import sys
 from argparse import ArgumentParser
 from typing import get_args
 
-from zed import zed
-from zed.constants import DEFAULT_MODEL, OAI_KEY_ENV_VARIABLE, OpenAiModel
+from zed_cli import zed
+from zed_cli.constants import DEFAULT_MODEL, OAI_KEY_ENV_VARIABLE, OpenAiModel
 
 logging.basicConfig(stream=sys.stdout)
 log = logging.getLogger(__name__)
+
+zed_ascii = r"""
+     ______ ___________
+    |___  /|  ___|  _  \
+       / / | |__ | | | |
+      / /  |  __|| | | |
+    ./ /___| |___| |/ /
+    \_____/\____/|___/
+"""
 
 
 def main():
@@ -52,6 +61,7 @@ def main():
         sys.exit(-1)
     if not user_query:
         log.debug("No question or comment provided to zed.")
+        print(zed_ascii)
         parser.print_help()
         sys.exit(0)
 

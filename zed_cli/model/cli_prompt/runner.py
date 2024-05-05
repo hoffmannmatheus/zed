@@ -3,9 +3,9 @@ from typing import List, Optional
 
 from openai import AsyncOpenAI
 
-from zed.constants import OpenAiModel
-from zed.model.defs import OpenAIMessage, Settings
-from zed.utils.render_utils import render_template
+from zed_cli.constants import OpenAiModel
+from zed_cli.model.defs import OpenAIMessage, Settings
+from zed_cli.utils.render_utils import render_template
 
 from .defs import CliCommandType, CliPromptInput, CliPromptOutput
 

@@ -57,11 +57,7 @@ class Console:
 
     def print_farewell(self):
         print(
-            styled(
-                text=f"{' ':>{self.column_width}} Sounds good, anytime.",
-                style=Style.DIM,
-                color=Fore.LIGHTWHITE_EX,
-            )
+            styled(text="Command not ran.", style=Style.DIM, color=Fore.LIGHTWHITE_EX)
         )
 
     def show_spinner(self):

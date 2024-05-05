@@ -4,7 +4,7 @@ A helpful command line assistant, based on ChatGPT.
 
 # Installation
 ```bash
-pip install zed_py
+pip install zed_cli
 ```
 
 # Usage
@@ -35,8 +35,12 @@ First, setup your local OpenAI API key:
 ```bash
 export ZED_OAI_KEY="your-openai-key"
 ```
-
 Then, run locally with:
 ```bash
 poetry run zed
+```
+
+## Publishing a new version
+```bash
+poetry publish --build
 ```
