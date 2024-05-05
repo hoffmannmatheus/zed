@@ -1,3 +1,4 @@
+import logging
 from typing import Optional
 from unittest.mock import Mock
 
@@ -8,7 +9,11 @@ from zed.model.cli_prompt import CliPromptOutput, Runner
 
 @pytest.fixture
 def runner() -> Runner:
-    return Runner(client=Mock(AsyncOpenAI))
+    return Runner(
+        log=logging.getLogger(__name__),
+        client=Mock(AsyncOpenAI),
+        model="gpt-4",
+    )
 
 
 @pytest.mark.parametrize(
