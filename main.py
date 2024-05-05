@@ -1,5 +1,7 @@
 import asyncio
+import logging
 import os
+import sys
 from argparse import ArgumentParser
 from typing import get_args
 
@@ -7,7 +9,10 @@ from openai import AsyncOpenAI
 
 from zed.constants import DEFAULT_MODEL, OpenAiModel
 from zed.model.cli_prompt.runner import CliPromptInput, Runner
-from zed.utils.print import pprint
+from zed.utils import Console
+
+logging.basicConfig(stream=sys.stdout)
+log = logging.getLogger(__name__)
 
 
 async def main():
@@ -28,12 +33,16 @@ async def main():
         help=f"The specific Open AI model to be used. Default is '{DEFAULT_MODEL}'.",
     )
     parsed, query_params = parser.parse_known_args()
+
+    console = Console()
+    console.show_spinner()
+
     is_debug: bool = parsed.debug
     model: OpenAiModel = parsed.model
 
-    pprint(is_debug, model, query_params)
+    log.setLevel(logging.DEBUG if is_debug else logging.WARNING)
+    log.debug(f'arguments: {is_debug = }, {model =}, {query_params}')
 
-    # pprint(parsed_query)
     runner = Runner(
         client=AsyncOpenAI(
             api_key=os.environ.get("ZED_OAI_KEY"),
@@ -45,18 +54,25 @@ async def main():
             query=" ".join(query_params),
         ),
     )
+    console.hide_spinner()
+    log.debug(f'Runner result: {cli_prompt_output = }')
 
-    # TODO setup actual pretty print
-    # system color for default  / debug text
-    # answer text in WHITE
-    # command text in CYAN
-    # confirm in RED
+    if not cli_prompt_output:
+        console.print_retry()
+        return sys.exit(-1)
 
-    pprint(cli_prompt_output)
+    if cli_prompt_output.answer:
+        console.print_answer(cli_prompt_output.answer)
+    if cli_prompt_output.command:
+        console.print_command(cli_prompt_output.command)
+    confirmed = console.await_confirmation()
 
-    # TODO setup command runner
-    # gets user confirmation
-    # runs commands on cli
+    if confirmed:
+        log.info(f'RUNNING {cli_prompt_output.command}')
+        os.system(cli_prompt_output.command)
+    else:
+        console.print_farewell()
+        return sys.exit(0)
 
 
 if __name__ == "__main__":

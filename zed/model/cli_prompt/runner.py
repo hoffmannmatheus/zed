@@ -1,11 +1,14 @@
+import logging
 from typing import List, Optional
 
 from openai import AsyncOpenAI
-from zed.constants import DEFAULT_MODEL, OpenAiModel
+from zed.constants import OpenAiModel
 from zed.model.defs import OpenAIMessage, Settings
 from zed.utils.render_utils import render_template
 
 from .defs import CliCommandType, CliPromptInput, CliPromptOutput
+
+log = logging.getLogger(__name__)
 
 
 class Runner:
@@ -23,19 +26,19 @@ class Runner:
     async def run_prompt(
         self, prompt_input: CliPromptInput
     ) -> Optional[CliPromptOutput]:
-        print(f"Calling OpenAI with args {self.settings.to_dict()}")
+        log.debug(f"Calling OpenAI with args {self.settings.to_dict()}")
         result = await self.client.chat.completions.create(
             **self.settings.to_dict(),
             messages=self._build_messages(prompt_input=prompt_input),
         )
 
-        print(f"Full OAI {result = }")
+        log.debug(f"Full OAI {result = }")
         if result.usage:
             # TODO log usage.prompt_tokens and usage.completition_tokens
             ...
         choices = result.choices
         if not choices or not choices[0].message or not choices[0].message.content:
-            print(f"Error: bad OAI result: {result}")
+            log.warning(f"Warning: bad OpenAI result: {result}")
             return None
 
         return self._parse_result(result=result.choices[0].message.content)
@@ -45,7 +48,7 @@ class Runner:
             origin_path=__file__, template_name=self.template
         )
         return [
-            # TODO add previeus exchanges and context
+            # TODO add previous exchanges and context
             OpenAIMessage(
                 role="assistant",
                 content=rendered_prompt,
@@ -58,7 +61,7 @@ class Runner:
 
     def _parse_result(self, result: str) -> Optional[CliPromptOutput]:
         result_by_line = result.split("\n")
-        print(f"{result_by_line = }")
+        log.debug(f"_parse_result(): {result_by_line = }")
         answer: Optional[str] = None
         command: Optional[str] = None
         included_confirm = False
@@ -77,7 +80,7 @@ class Runner:
         if not answer and not command:
             return None
         if command and not included_confirm:
-            print("Error! Answer included a COMMAND, but no CONFIRM instruction")
+            log.warning("Error! Answer included a COMMAND, but no CONFIRM instruction")
             return None
         return CliPromptOutput(
             answer=answer,
