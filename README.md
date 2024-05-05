@@ -5,7 +5,7 @@ A helpful command line assistant, based on ChatGPT.
 # Installation
 Note: Zed requires Python 3.8+
 ```bash
-pip install zed-cli
+pip install zed-assistant
 ```
 
 # Usage

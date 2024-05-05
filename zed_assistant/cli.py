@@ -5,8 +5,8 @@ import sys
 from argparse import ArgumentParser
 from typing import get_args
 
-from zed_cli import zed
-from zed_cli.constants import DEFAULT_MODEL, OAI_KEY_ENV_VARIABLE, OpenAiModel
+from zed_assistant import zed
+from zed_assistant.constants import DEFAULT_MODEL, OAI_KEY_ENV_VARIABLE, OpenAiModel
 
 logging.basicConfig(stream=sys.stdout)
 log = logging.getLogger(__name__)

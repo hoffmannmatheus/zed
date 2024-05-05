@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "zed-cli"
+name = "zed-assistant"
 version = "0.0.1"
 description = "Zed is an LLM-based CLI assistant built with python and Chat GPT"
 authors = ["Matheus Hoffmann Silva <hoffmann.matheus@gmail.com>"]
@@ -20,4 +20,4 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-zed = "zed_cli.cli:main"
+zed = "zed_assistant.cli:main"

@@ -4,7 +4,7 @@ from unittest.mock import Mock
 
 import pytest
 from openai import AsyncOpenAI
-from zed_cli.model.cli_prompt import CliPromptOutput, Runner
+from zed_assistant.model.cli_prompt import CliPromptOutput, Runner
 
 
 @pytest.fixture
