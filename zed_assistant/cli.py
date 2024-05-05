@@ -5,25 +5,30 @@ import sys
 from argparse import ArgumentParser
 from typing import get_args
 
-from zed_assistant import zed
+from zed_assistant import __version__, zed
 from zed_assistant.constants import DEFAULT_MODEL, OAI_KEY_ENV_VARIABLE, OpenAiModel
 
 logging.basicConfig(stream=sys.stdout)
 log = logging.getLogger(__name__)
 
-zed_ascii = r"""
+zed_ascii = rf"""
      ______ ___________
     |___  /|  ___|  _  \
        / / | |__ | | | |
       / /  |  __|| | | |
     ./ /___| |___| |/ /
-    \_____/\____/|___/
+    \_____/\____/|___/  v{__version__}
 """
 
 
 def main():
     parser = ArgumentParser(
-        description="zed is a LLM-based CLI assistant built with python and Chat GPT"
+        description="zed is a LLM-based CLI assistant built with python and Chat GPT",
+    )
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=f"%(prog)s {__version__}",
     )
     parser.add_argument(
         "--debug",
