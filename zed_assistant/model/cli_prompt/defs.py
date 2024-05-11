@@ -1,6 +1,8 @@
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from enum import Enum
-from typing import List, Optional
+from typing import Optional
+
+from zed_assistant.model.defs import PromptTemplateValues
 
 
 class CliCommandType(str, Enum):
@@ -9,9 +11,21 @@ class CliCommandType(str, Enum):
     ANSWER = "ANSWER"
 
 
+class OperatingSystem(str, Enum):
+    MAC_OS = "Mac OS"
+    UBUNTU = "Ubuntu"
+    ARCH = "Arch Linux"
+
+
+##
+# Cli prompt runner input and output
+##
+
+
 @dataclass
 class CliPromptInput:
-    query: str
+    input: str
+    operating_system: OperatingSystem
 
 
 @dataclass
@@ -21,16 +35,16 @@ class CliPromptOutput:
     needs_confirmation: bool = True
 
 
-@dataclass
-class CliPromptExchange:
-    query: str
-    response: str
-    was_confirmed: bool
+##
+# Cli prompt template values
+##
 
 
 @dataclass
-class CliPromptContext:
-    history: List[CliPromptExchange]
-    user: str
-    path: str
-    files_in_path: List[str]
+class SystemTemplateValues(PromptTemplateValues):
+    operating_system: str
+
+
+@dataclass
+class UserTemplateValues(PromptTemplateValues):
+    input: str

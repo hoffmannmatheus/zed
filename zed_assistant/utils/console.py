@@ -40,7 +40,10 @@ class Console:
             style=Style.BRIGHT,
             color=Fore.MAGENTA,
         )
-        return input(f"{confirmation_title} ").lower() in CONFIRM_OPTIONS
+        try:
+            return input(f"{confirmation_title} ").lower() in CONFIRM_OPTIONS
+        except KeyboardInterrupt:
+            return False
 
     def print_run_command(self, command: str):
         print(

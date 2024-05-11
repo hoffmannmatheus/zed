@@ -1,3 +1,4 @@
+from abc import ABC
 from dataclasses import asdict, dataclass
 from typing import Dict, Literal
 
@@ -16,3 +17,9 @@ class Settings:
 class OpenAIMessage(Dict):
     role: Literal["assistant", "user"]
     content: str
+
+
+@dataclass
+class PromptTemplateValues(ABC):
+    def to_dict(self):
+        return {k: str(v) for k, v in asdict(self).items()}

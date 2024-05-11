@@ -7,14 +7,14 @@ from zed_assistant.constants import OpenAiModel
 from zed_assistant.model.defs import OpenAIMessage, Settings
 from zed_assistant.utils.render_utils import render_template
 
-from .defs import CliCommandType, CliPromptInput, CliPromptOutput
+from .defs import (CliCommandType, CliPromptInput, CliPromptOutput,
+                   SystemTemplateValues, UserTemplateValues)
 
 
 class Runner:
     def __init__(self, log: Logger, client: AsyncOpenAI, model: OpenAiModel):
         self.log = log
         self.client = client
-        self.template = "template"
         self.settings = Settings(
             model=model,
             max_tokens=64,
@@ -43,19 +43,26 @@ class Runner:
         return self._parse_result(result=result.choices[0].message.content)
 
     def _build_messages(self, prompt_input: CliPromptInput) -> List[OpenAIMessage]:
-        rendered_prompt = render_template(
-            origin_path=__file__, template_name=self.template
+        system_template_values = SystemTemplateValues(
+            operating_system=prompt_input.operating_system
         )
+        rendered_system_prompt = render_template(
+            origin_path=__file__,
+            template_name="template_system",
+            data=system_template_values.to_dict(),
+        )
+        user_template_values = UserTemplateValues(input=prompt_input.input)
+        rendered_user_prompt = render_template(
+            origin_path=__file__,
+            template_name="template_user",
+            data=user_template_values.to_dict(),
+        )
+        self.log.debug(f" {rendered_system_prompt = }")
+        self.log.debug(f" {rendered_user_prompt = }")
         return [
             # TODO add previous exchanges and context
-            OpenAIMessage(
-                role="assistant",
-                content=rendered_prompt,
-            ),
-            OpenAIMessage(
-                role="user",
-                content=prompt_input.query,
-            ),
+            OpenAIMessage(role="system", content=rendered_system_prompt),
+            OpenAIMessage(role="user", content=rendered_user_prompt),
         ]
 
     def _parse_result(self, result: str) -> Optional[CliPromptOutput]:
@@ -68,11 +75,11 @@ class Runner:
 
         for line in result_by_line:
             if line.startswith(CliCommandType.ANSWER):
-                answer = line[len(CliCommandType.ANSWER.value):].strip()
+                answer = line[len(CliCommandType.ANSWER.value) :].strip()
             elif line.startswith(CliCommandType.COMMAND):
-                command = line[len(CliCommandType.COMMAND.value):].strip()
+                command = line[len(CliCommandType.COMMAND.value) :].strip()
             elif line.startswith(CliCommandType.CONFIRM):
-                confirm = line[len(CliCommandType.COMMAND.value):].strip()
+                confirm = line[len(CliCommandType.COMMAND.value) :].strip()
                 included_confirm = True
                 needs_confirmation = confirm == "yes"
 

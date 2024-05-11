@@ -4,7 +4,8 @@ from logging import Logger
 from openai import AsyncOpenAI
 
 from zed_assistant.constants import OpenAiModel
-from zed_assistant.model.cli_prompt import CliPromptInput, Runner
+from zed_assistant.model.cli_prompt import (CliPromptInput, OperatingSystem,
+                                            Runner)
 from zed_assistant.utils import Console
 
 
@@ -22,7 +23,8 @@ async def run(log: Logger, oai_key: str, model: OpenAiModel, user_query: str) ->
     )
     cli_prompt_output = await runner.run_prompt(
         CliPromptInput(
-            query=user_query,
+            input=user_query,
+            operating_system=OperatingSystem.MAC_OS,
         ),
     )
     console.hide_spinner()
