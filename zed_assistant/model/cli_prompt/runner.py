@@ -8,7 +8,7 @@ from zed_assistant.model.defs import OpenAIMessage, Settings
 from zed_assistant.utils.render_utils import render_template
 
 from .defs import (CliCommandType, CliPromptInput, CliPromptOutput,
-                   SystemTemplateValues, UserTemplateValues)
+                   SystemTemplateValues)
 
 
 class Runner:
@@ -51,18 +51,11 @@ class Runner:
             template_name="template_system",
             data=system_template_values.to_dict(),
         )
-        user_template_values = UserTemplateValues(input=prompt_input.input)
-        rendered_user_prompt = render_template(
-            origin_path=__file__,
-            template_name="template_user",
-            data=user_template_values.to_dict(),
-        )
         self.log.debug(f" {rendered_system_prompt = }")
-        self.log.debug(f" {rendered_user_prompt = }")
         return [
-            # TODO add previous exchanges and context
+            # TODO add previous assistant and user exchanges for?
             OpenAIMessage(role="system", content=rendered_system_prompt),
-            OpenAIMessage(role="user", content=rendered_user_prompt),
+            OpenAIMessage(role="user", content=prompt_input.input),
         ]
 
     def _parse_result(self, result: str) -> Optional[CliPromptOutput]:

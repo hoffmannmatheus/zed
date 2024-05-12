@@ -43,8 +43,3 @@ class CliPromptOutput:
 @dataclass
 class SystemTemplateValues(PromptTemplateValues):
     operating_system: str
-
-
-@dataclass
-class UserTemplateValues(PromptTemplateValues):
-    input: str
