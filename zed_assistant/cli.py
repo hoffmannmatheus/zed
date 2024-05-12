@@ -5,9 +5,10 @@ import sys
 from argparse import ArgumentParser
 from typing import get_args
 
-from zed_assistant import __version__, zed
+from zed_assistant import __version__
 from zed_assistant.constants import (DEFAULT_MODEL, ENV_VARIABLE_OAI_KEY,
                                      ENV_VARIABLE_YODA_MODE, OpenAiModel)
+from zed_assistant.zed import Zed
 
 logging.basicConfig(stream=sys.stdout)
 log = logging.getLogger(__name__)
@@ -42,19 +43,19 @@ def main():
         type=str,
         choices=get_args(OpenAiModel),
         default=DEFAULT_MODEL,
-        help=f"The specific Open AI model to be used. Default is '{DEFAULT_MODEL}'.",
+        help=f"The specific Open AI model to be used. Default is '{DEFAULT_MODEL}'",
     )
     parser.add_argument(
         "--open-ai-key",
         type=str,
         required=False,
-        help=f"The Open AI API key. You can also set the environment variable {ENV_VARIABLE_OAI_KEY}=key.",
+        help=f"The Open AI API key. You can also set the environment variable {ENV_VARIABLE_OAI_KEY}=key",
     )
     parser.add_argument(
         "--yoda-mode",
         default=False,
         action="store_true",
-        help=f"Enables Master Yoda mode. You can set the environment variable {ENV_VARIABLE_YODA_MODE}=true.",
+        help=f"Enables Master Yoda mode. You can also set the environment variable {ENV_VARIABLE_YODA_MODE}=true",
     )
     parsed, user_query = parser.parse_known_args()
 
@@ -79,15 +80,8 @@ def main():
         sys.exit(0)
 
     formatted_input = " ".join(user_query)
-    success = asyncio.run(
-        zed.run(
-            log=log,
-            oai_key=oai_key,
-            model=model,
-            user_query=formatted_input,
-            yoda_mode=yoda_mode,
-        )
-    )
+    zed = Zed(log=log, oai_key=oai_key, model=model, yoda_mode=yoda_mode)
+    success = asyncio.run(zed.run(user_query=formatted_input))
     sys.exit(0 if success else -1)
 
 

@@ -11,10 +11,17 @@ from .defs import (CliCommandType, CliPromptInput, CliPromptOutput,
                    SystemTemplateValues)
 
 
-class Runner:
-    def __init__(self, log: Logger, client: AsyncOpenAI, model: OpenAiModel):
+class CommandPromptRunner:
+    def __init__(
+        self,
+        log: Logger,
+        client: AsyncOpenAI,
+        model: OpenAiModel,
+        yoda_mode: bool = False,
+    ):
         self.log = log
         self.client = client
+        self.yoda_mode = yoda_mode
         self.settings = Settings(
             model=model,
             max_tokens=64,
@@ -45,7 +52,7 @@ class Runner:
     def _build_messages(self, prompt_input: CliPromptInput) -> List[OpenAIMessage]:
         system_template_values = SystemTemplateValues(
             operating_system=prompt_input.operating_system,
-            yoda_mode=prompt_input.yoda_mode,
+            yoda_mode=self.yoda_mode,
         )
         rendered_system_prompt = render_template(
             origin_path=__file__,

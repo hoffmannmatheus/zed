@@ -18,25 +18,26 @@ echo "export ZED_OAI_KEY=my-key" >> ~/.zshrc  # or .bash_profile, etc
 Run `zed` with no arguments to get the help menu:
 ```
 ~ zed
-
      ______ ___________
     |___  /|  ___|  _  \
        / / | |__ | | | |
       / /  |  __|| | | |
     ./ /___| |___| |/ /
-    \_____/\____/|___/
+    \_____/\____/|___/  v0.0.3
 
-usage: zed [-h] [--debug] [--model {gpt-4,gpt-4-turbo,gpt-3.5-turbo}] [--open-ai-key OPEN_AI_KEY]
+usage: zed [-h] [--version] [--debug] [--model {gpt-4,gpt-4-turbo,gpt-3.5-turbo}] [--open-ai-key OPEN_AI_KEY] [--yoda-mode]
 
 zed is a LLM-based CLI assistant built with python and Chat GPT
 
 optional arguments:
   -h, --help            show this help message and exit
+  --version             show program's version number and exit
   --debug               Enables print debug logs.
   --model {gpt-4,gpt-4-turbo,gpt-3.5-turbo}
-                        The specific Open AI model to be used. Default is 'gpt-4-turbo'.
+                        The specific Open AI model to be used. Default is 'gpt-4-turbo'
   --open-ai-key OPEN_AI_KEY
-                        The Open AI API key. You can also set the environment variable ZED_OAI_KEY.
+                        The Open AI API key. You can also set the environment variable ZED_OAI_KEY=key
+  --yoda-mode           Enables Master Yoda mode. You can set the environment variable ZED_YODA_MODE=true
 ```
 
 # Contributing 

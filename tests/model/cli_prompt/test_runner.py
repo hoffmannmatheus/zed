@@ -4,12 +4,12 @@ from unittest.mock import Mock
 
 import pytest
 from openai import AsyncOpenAI
-from zed_assistant.model.cli_prompt import CliPromptOutput, Runner
+from zed_assistant.model.command_prompt import CliPromptOutput, CommandPromptRunner
 
 
 @pytest.fixture
-def runner() -> Runner:
-    return Runner(
+def runner() -> CommandPromptRunner:
+    return CommandPromptRunner(
         log=logging.getLogger(__name__),
         client=Mock(AsyncOpenAI),
         model="gpt-4",
@@ -45,7 +45,7 @@ def runner() -> Runner:
 def test_parse_prompt_result(
     result: str,
     expected_output: Optional[CliPromptOutput],
-    runner: Runner,
+    runner: CommandPromptRunner,
 ) -> None:
     output = runner._parse_result(result=result)
     assert output == expected_output

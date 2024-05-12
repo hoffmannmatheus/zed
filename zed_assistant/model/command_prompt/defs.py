@@ -1,4 +1,4 @@
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 from enum import Enum
 from typing import Optional
 
@@ -26,7 +26,6 @@ class OperatingSystem(str, Enum):
 class CliPromptInput:
     input: str
     operating_system: OperatingSystem
-    yoda_mode: bool
 
 
 @dataclass

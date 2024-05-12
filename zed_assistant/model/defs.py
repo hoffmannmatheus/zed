@@ -15,7 +15,7 @@ class Settings:
 
 
 class OpenAIMessage(Dict):
-    role: Literal["assistant", "user"]
+    role: Literal["system", "assistant", "user"]
     content: str
 
 

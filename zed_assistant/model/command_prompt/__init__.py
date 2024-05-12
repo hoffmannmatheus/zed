@@ -1,9 +1,9 @@
 from .defs import CliPromptInput, CliPromptOutput, OperatingSystem
-from .runner import Runner
+from .prompt_runner import CommandPromptRunner
 
 __all__ = [
     "CliPromptInput",
     "CliPromptOutput",
-    "Runner",
+    "CommandPromptRunner",
     "OperatingSystem",
 ]
