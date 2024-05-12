@@ -44,7 +44,8 @@ class Runner:
 
     def _build_messages(self, prompt_input: CliPromptInput) -> List[OpenAIMessage]:
         system_template_values = SystemTemplateValues(
-            operating_system=prompt_input.operating_system
+            operating_system=prompt_input.operating_system,
+            yoda_mode=prompt_input.yoda_mode,
         )
         rendered_system_prompt = render_template(
             origin_path=__file__,

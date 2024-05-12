@@ -6,8 +6,8 @@ from argparse import ArgumentParser
 from typing import get_args
 
 from zed_assistant import __version__, zed
-from zed_assistant.constants import (DEFAULT_MODEL, OAI_KEY_ENV_VARIABLE,
-                                     OpenAiModel)
+from zed_assistant.constants import (DEFAULT_MODEL, ENV_VARIABLE_OAI_KEY,
+                                     ENV_VARIABLE_YODA_MODE, OpenAiModel)
 
 logging.basicConfig(stream=sys.stdout)
 log = logging.getLogger(__name__)
@@ -48,20 +48,27 @@ def main():
         "--open-ai-key",
         type=str,
         required=False,
-        help=f"The Open AI API key. You can also set the environment variable {OAI_KEY_ENV_VARIABLE}.",
+        help=f"The Open AI API key. You can also set the environment variable {ENV_VARIABLE_OAI_KEY}=key.",
+    )
+    parser.add_argument(
+        "--yoda-mode",
+        default=False,
+        action="store_true",
+        help=f"Enables Master Yoda mode. You can set the environment variable {ENV_VARIABLE_YODA_MODE}=true.",
     )
     parsed, user_query = parser.parse_known_args()
 
     is_debug: bool = parsed.debug
     model: OpenAiModel = parsed.model
-    oai_key = parsed.open_ai_key or os.environ.get(OAI_KEY_ENV_VARIABLE)
+    oai_key = parsed.open_ai_key or os.environ.get(ENV_VARIABLE_OAI_KEY)
+    yoda_mode = parsed.yoda_mode or os.environ.get(ENV_VARIABLE_YODA_MODE) == "true"
 
     log.setLevel(logging.DEBUG if is_debug else logging.WARNING)
-    log.debug(f"arguments: {is_debug = }, {model =}, {user_query}")
+    log.debug(f"arguments: {is_debug = }, {model = }, {yoda_mode = }. {user_query}")
 
     if not oai_key:
         log.error(
-            f" Open AI key is missing. Please set the '{OAI_KEY_ENV_VARIABLE}' "
+            f" Open AI key is missing. Please set the '{ENV_VARIABLE_OAI_KEY}' "
             "environment variable, or as a command parameter."
         )
         sys.exit(-1)
@@ -71,12 +78,14 @@ def main():
         parser.print_help()
         sys.exit(0)
 
+    formatted_input = " ".join(user_query)
     success = asyncio.run(
         zed.run(
             log=log,
             oai_key=oai_key,
             model=model,
-            user_query=" ".join(user_query),
+            user_query=formatted_input,
+            yoda_mode=yoda_mode,
         )
     )
     sys.exit(0 if success else -1)

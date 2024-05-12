@@ -26,6 +26,7 @@ class OperatingSystem(str, Enum):
 class CliPromptInput:
     input: str
     operating_system: OperatingSystem
+    yoda_mode: bool
 
 
 @dataclass
@@ -43,3 +44,4 @@ class CliPromptOutput:
 @dataclass
 class SystemTemplateValues(PromptTemplateValues):
     operating_system: str
+    yoda_mode: bool

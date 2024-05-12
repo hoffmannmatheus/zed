@@ -9,7 +9,13 @@ from zed_assistant.model.cli_prompt import (CliPromptInput, OperatingSystem,
 from zed_assistant.utils import Console
 
 
-async def run(log: Logger, oai_key: str, model: OpenAiModel, user_query: str) -> bool:
+async def run(
+    log: Logger,
+    oai_key: str,
+    model: OpenAiModel,
+    user_query: str,
+    yoda_mode: bool = False,
+) -> bool:
     """
     Main Zed executor.
     """
@@ -24,6 +30,7 @@ async def run(log: Logger, oai_key: str, model: OpenAiModel, user_query: str) ->
     cli_prompt_output = await runner.run_prompt(
         CliPromptInput(
             input=user_query,
+            yoda_mode=yoda_mode,
             operating_system=OperatingSystem.MAC_OS,
         ),
     )
