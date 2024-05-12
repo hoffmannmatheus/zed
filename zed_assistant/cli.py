@@ -29,7 +29,7 @@ def main():
     parser.add_argument(
         "--version",
         action="version",
-        version=f"%(prog)s {__version__}",
+        version=f"zed-assistant {__version__}",
     )
     parser.add_argument(
         "--debug",
