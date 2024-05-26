@@ -4,7 +4,7 @@ from logging import Logger
 from openai import AsyncOpenAI
 
 from zed_assistant.constants import OpenAiModel
-from zed_assistant.model.command_prompt import (CliPromptInput,
+from zed_assistant.model.command_prompt import (CommandPromptInput,
                                                 CommandPromptRunner,
                                                 OperatingSystem)
 from zed_assistant.utils import Console
@@ -16,11 +16,11 @@ class Zed:
     ):
         self.log = log
         self.console = Console()
+        self.yoda_mode = yoda_mode
         self.command_prompt_runner = CommandPromptRunner(
             log=log,
             client=AsyncOpenAI(api_key=oai_key),
             model=model,
-            yoda_mode=yoda_mode,
         )
 
     async def run(self, user_query: str) -> bool:
@@ -29,9 +29,10 @@ class Zed:
         """
         self.console.show_spinner()
         cli_prompt_output = await self.command_prompt_runner.run_prompt(
-            CliPromptInput(
+            CommandPromptInput(
                 input=user_query,
                 operating_system=OperatingSystem.MAC_OS,
+                yoda_mode=self.yoda_mode,
             ),
         )
         self.console.hide_spinner()

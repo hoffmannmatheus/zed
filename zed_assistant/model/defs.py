@@ -1,10 +1,10 @@
 from abc import ABC
 from dataclasses import asdict, dataclass
-from typing import Dict, Literal
+from typing import Dict, Literal, Optional
 
 
 @dataclass
-class Settings:
+class ModelSettings:
     model: str
     max_tokens: int
     temperature: float
@@ -23,3 +23,10 @@ class OpenAIMessage(Dict):
 class PromptTemplateValues(ABC):
     def to_dict(self):
         return {k: str(v) for k, v in asdict(self).items()}
+
+
+@dataclass
+class ZedAnswer:
+    answer: Optional[str] = None
+    command: Optional[str] = None
+    needs_confirmation: bool = True

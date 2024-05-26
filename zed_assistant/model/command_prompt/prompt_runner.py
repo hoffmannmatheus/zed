@@ -4,11 +4,10 @@ from typing import List, Optional
 from openai import AsyncOpenAI
 
 from zed_assistant.constants import OpenAiModel
-from zed_assistant.model.defs import OpenAIMessage, Settings
-from zed_assistant.utils.render_utils import render_template
+from zed_assistant.model.defs import ModelSettings, OpenAIMessage, ZedAnswer
+from zed_assistant.utils.template_utils import load_template, render_data
 
-from .defs import (CliCommandType, CliPromptInput, CliPromptOutput,
-                   SystemTemplateValues)
+from .defs import CliCommandType, CommandPromptInput, SystemTemplateValues
 
 
 class CommandPromptRunner:
@@ -17,25 +16,25 @@ class CommandPromptRunner:
         log: Logger,
         client: AsyncOpenAI,
         model: OpenAiModel,
-        yoda_mode: bool = False,
     ):
         self.log = log
         self.client = client
-        self.yoda_mode = yoda_mode
-        self.settings = Settings(
+        self.template_system = load_template(
+            origin_path=__file__,
+            template_name="template_system",
+        )
+        self.model_settings = ModelSettings(
             model=model,
             max_tokens=64,
             temperature=0.0,
             stream=False,
         )
 
-    async def run_prompt(
-        self, prompt_input: CliPromptInput
-    ) -> Optional[CliPromptOutput]:
-        self.log.debug(f"Calling OpenAI with args {self.settings.to_dict()}")
+    async def run_prompt(self, prompt_input: CommandPromptInput) -> Optional[ZedAnswer]:
+        self.log.debug(f"Calling OpenAI with args {self.model_settings.to_dict()}")
         result = await self.client.chat.completions.create(
-            **self.settings.to_dict(),
-            messages=self._build_messages(prompt_input=prompt_input),
+            **self.model_settings.to_dict(),
+            messages=self._build_prompt_messages(prompt_input=prompt_input),
         )
 
         self.log.debug(f"Full OAI {result = }")
@@ -49,14 +48,15 @@ class CommandPromptRunner:
 
         return self._parse_result(result=result.choices[0].message.content)
 
-    def _build_messages(self, prompt_input: CliPromptInput) -> List[OpenAIMessage]:
+    def _build_prompt_messages(
+        self, prompt_input: CommandPromptInput
+    ) -> List[OpenAIMessage]:
         system_template_values = SystemTemplateValues(
-            operating_system=prompt_input.operating_system,
-            yoda_mode=self.yoda_mode,
+            operating_system=prompt_input.operating_system.value,
+            yoda_mode=prompt_input.yoda_mode,
         )
-        rendered_system_prompt = render_template(
-            origin_path=__file__,
-            template_name="template_system",
+        rendered_system_prompt = render_data(
+            template=self.template_system,
             data=system_template_values.to_dict(),
         )
         self.log.debug(f" {rendered_system_prompt = }")
@@ -66,7 +66,9 @@ class CommandPromptRunner:
             OpenAIMessage(role="user", content=prompt_input.input),
         ]
 
-    def _parse_result(self, result: str) -> Optional[CliPromptOutput]:
+    def _parse_result(self, result: Optional[str]) -> Optional[ZedAnswer]:
+        if not result:
+            return None
         result_by_line = result.split("\n")
         self.log.debug(f"_parse_result(): {result_by_line = }")
         answer: Optional[str] = None
@@ -91,7 +93,7 @@ class CommandPromptRunner:
                 "Error! Answer included a COMMAND, but no CONFIRM instruction"
             )
             return None
-        return CliPromptOutput(
+        return ZedAnswer(
             answer=answer,
             command=command,
             needs_confirmation=needs_confirmation,

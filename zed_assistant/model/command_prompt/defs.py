@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional
 
 from zed_assistant.model.defs import PromptTemplateValues
 
@@ -14,30 +13,13 @@ class CliCommandType(str, Enum):
 class OperatingSystem(str, Enum):
     MAC_OS = "Mac OS"
     UBUNTU = "Ubuntu"
-    ARCH = "Arch Linux"
-
-
-##
-# Cli prompt runner input and output
-##
 
 
 @dataclass
-class CliPromptInput:
+class CommandPromptInput:
     input: str
+    yoda_mode: bool
     operating_system: OperatingSystem
-
-
-@dataclass
-class CliPromptOutput:
-    answer: Optional[str] = None
-    command: Optional[str] = None
-    needs_confirmation: bool = True
-
-
-##
-# Cli prompt template values
-##
 
 
 @dataclass

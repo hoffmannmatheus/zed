@@ -1,6 +1,6 @@
-from .defs import OpenAIMessage, Settings
+from .defs import OpenAIMessage, ModelSettings
 
 __all__ = [
-    "Settings",
+    "ModelSettings",
     "OpenAIMessage",
 ]
