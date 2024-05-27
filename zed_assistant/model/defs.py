@@ -2,6 +2,12 @@ from abc import ABC
 from dataclasses import asdict, dataclass
 from typing import Dict, Literal, Optional
 
+OpenAiModel = Literal["gpt-4", "gpt-4-turbo", "gpt-3.5-turbo"]
+DEFAULT_MODEL = "gpt-4-turbo"
+"""
+The default OpenAI model used by Zed.
+"""
+
 
 @dataclass
 class ModelSettings:
@@ -22,7 +28,7 @@ class OpenAIMessage(Dict):
 @dataclass
 class PromptTemplateValues(ABC):
     def to_dict(self):
-        return {k: str(v) for k, v in asdict(self).items()}
+        return {k: v for k, v in asdict(self).items()}
 
 
 @dataclass

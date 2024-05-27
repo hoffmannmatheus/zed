@@ -1,11 +1,16 @@
 from logging import Logger
 from typing import List, Optional
 
+from jinja2 import Template
 from openai import AsyncOpenAI
 
-from zed_assistant.constants import OpenAiModel
-from zed_assistant.model.defs import ModelSettings, OpenAIMessage, ZedAnswer
-from zed_assistant.utils.template_utils import load_template, render_data
+from zed_assistant.model.defs import (
+    ModelSettings,
+    OpenAIMessage,
+    OpenAiModel,
+    ZedAnswer,
+)
+from zed_assistant.utils.file_utils import read_file_contents
 
 from .defs import CliCommandType, CommandPromptInput, SystemTemplateValues
 
@@ -19,9 +24,9 @@ class CommandPromptRunner:
     ):
         self.log = log
         self.client = client
-        self.template_system = load_template(
-            origin_path=__file__,
-            template_name="template_system",
+        self.template_system = read_file_contents(
+            folder_path=__file__,
+            file_name="template_system.j2",
         )
         self.model_settings = ModelSettings(
             model=model,
@@ -54,12 +59,11 @@ class CommandPromptRunner:
         system_template_values = SystemTemplateValues(
             operating_system=prompt_input.operating_system.value,
             yoda_mode=prompt_input.yoda_mode,
+        ).to_dict()
+        rendered_system_prompt = Template(self.template_system).render(
+            system_template_values
         )
-        rendered_system_prompt = render_data(
-            template=self.template_system,
-            data=system_template_values.to_dict(),
-        )
-        self.log.debug(f" {rendered_system_prompt = }")
+        self.log.debug(f"{system_template_values = } {rendered_system_prompt = }")
         return [
             # TODO add previous assistant and user exchanges for?
             OpenAIMessage(role="system", content=rendered_system_prompt),

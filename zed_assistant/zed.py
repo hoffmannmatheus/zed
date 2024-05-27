@@ -3,24 +3,24 @@ from logging import Logger
 
 from openai import AsyncOpenAI
 
-from zed_assistant.constants import OpenAiModel
-from zed_assistant.model.command_prompt import (CommandPromptInput,
-                                                CommandPromptRunner,
-                                                OperatingSystem)
+from zed_assistant.model.command_prompt import (
+    CommandPromptInput,
+    CommandPromptRunner,
+    OperatingSystem,
+)
+from zed_assistant.settings.defs import ZedSettings
 from zed_assistant.utils import Console
 
 
 class Zed:
-    def __init__(
-        self, oai_key: str, log: Logger, model: OpenAiModel, yoda_mode: bool = False
-    ):
+    def __init__(self, settings: ZedSettings, log: Logger):
         self.log = log
         self.console = Console()
-        self.yoda_mode = yoda_mode
+        self.settings = settings
         self.command_prompt_runner = CommandPromptRunner(
             log=log,
-            client=AsyncOpenAI(api_key=oai_key),
-            model=model,
+            client=AsyncOpenAI(api_key=settings.openai_key),
+            model=settings.model,
         )
 
     async def run(self, user_query: str) -> bool:
@@ -32,7 +32,7 @@ class Zed:
             CommandPromptInput(
                 input=user_query,
                 operating_system=OperatingSystem.MAC_OS,
-                yoda_mode=self.yoda_mode,
+                yoda_mode=self.settings.yoda_mode,
             ),
         )
         self.console.hide_spinner()
