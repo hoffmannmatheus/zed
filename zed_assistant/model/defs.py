@@ -2,8 +2,8 @@ from abc import ABC
 from dataclasses import asdict, dataclass
 from typing import Dict, Literal, Optional
 
-OpenAiModel = Literal["gpt-4", "gpt-4-turbo", "gpt-3.5-turbo"]
-DEFAULT_MODEL = "gpt-4-turbo"
+OpenAiModel = Literal["gpt-4o", "gpt-4-turbo", "gpt-3.5-turbo"]
+DEFAULT_MODEL = "gpt-4o"
 """
 The default OpenAI model used by Zed.
 """
