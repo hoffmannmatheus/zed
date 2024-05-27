@@ -6,7 +6,7 @@ from typing import Tuple, get_args
 
 from zed_assistant import __version__
 from zed_assistant.model.defs import DEFAULT_MODEL, OpenAiModel
-from zed_assistant.settings.defs import ZedSettings
+from zed_assistant.settings.defs import ZedSettings, SETTINGS_CONFIG_FILE
 from zed_assistant.settings.loader import merge_with_local_settings
 from zed_assistant.zed import Zed
 
@@ -25,7 +25,9 @@ zed_ascii = rf"""
 
 def main() -> None:
     parser = ArgumentParser(
-        description="zed is a LLM-based CLI assistant built with python and Chat GPT",
+        description=(
+            "zed is a LLM-based CLI assistant."
+        ),
     )
     user_query, settings = parse_arguments(parser)
 
