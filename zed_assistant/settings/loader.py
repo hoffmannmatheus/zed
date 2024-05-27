@@ -1,6 +1,6 @@
 from typing import Dict, Optional
 
-from zed_assistant.model.defs import OpenAiModel
+from zed_assistant.model.defs import DEFAULT_MODEL, OpenAiModel
 from zed_assistant.settings.defs import (
     CONFIG_SEPARATOR,
     SETTINGS_CONFIG_FILE,
@@ -17,9 +17,9 @@ def merge_with_local_settings(
     local = _config_str_to_dict(str_config=str_config)
     return ZedSettings(
         openai_key=local.get("openai_key"),
-        model=model or local.get("model"),
-        yoda_mode=yoda_mode or local.get("yoda_mode").lower() == "true",
-        debug=is_debug or local.get("debug").lower() == "true",
+        model=model or local.get("model", DEFAULT_MODEL),
+        yoda_mode=yoda_mode or local.get("yoda_mode", "").lower() == "true",
+        debug=is_debug or local.get("debug", "").lower() == "true",
     )
 
 
